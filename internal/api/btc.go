@@ -18,7 +18,7 @@ var btcRateApiUrl = "https://rest.coinapi." +
 	"io/v1/exchangerate/BTC/UAH?apikey=" + apiKey
 
 
-func GetBTCRateInUAH(w http.ResponseWriter, r *http.Request) {
+func (s *Server) GetBTCRateInUAH(w http.ResponseWriter, r *http.Request) {
 	resp, err := http.Get(btcRateApiUrl)
 	if err != nil {
 		log.Println(err)

@@ -36,7 +36,7 @@ func generateToken() string {
 	return fmt.Sprintf("%x", b)
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println(err)
@@ -54,11 +54,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	//log.Println(requestJson)
 	if requestJson.Email == "" || requestJson.Password == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("email or password is not provided"))
+			w.Write([]byte("email or password is not provided"))
 		return
 	}
 
-	if r, _ := Storage.Get(requestJson.Email); r != nil {
+	if r, _ := s.storage.Get(requestJson.Email); r != nil {
 		w.WriteHeader(http.StatusConflict)
 		return
 	}
@@ -68,21 +68,21 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 	token := generateToken()
-	err = Storage.Set(requestJson.Email, []string{hashedPassword, token})
+	err = s.storage.Set(requestJson.Email, []string{hashedPassword, token})
 	if err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
-	if err := Storage.Set(token, requestJson.Email); err != nil {
+	if err := s.storage.Set(token, requestJson.Email); err != nil {
 		log.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
 
 
-	if err := Storage.Save(); err != nil {
+	if err := s.storage.Save(); err != nil {
 		log.Println(err)
 	}
 
@@ -94,7 +94,7 @@ type LoginUserParams struct {
 	Password	string 	`json:"password"`
 }
 
-func LoginUser(w http.ResponseWriter, r *http.Request) {
+func (s *Server) LoginUser(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println(err)
@@ -110,7 +110,7 @@ func LoginUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	storedData, err := Storage.Get(requestJson.Email)
+	storedData, err := s.storage.Get(requestJson.Email)
 	if err != nil {
 		log.Println(err)
 	}

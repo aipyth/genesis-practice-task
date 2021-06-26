@@ -13,7 +13,7 @@ type TokenOnly struct {
 	Token string `json:"token"`
 }
 
-func EnsureAuth(h http.HandlerFunc) http.HandlerFunc {
+func (s *Server) EnsureAuth(h http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -29,7 +29,7 @@ func EnsureAuth(h http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		tokenData, err := Storage.Get(dataJson.Token)
+		tokenData, err := s.storage.Get(dataJson.Token)
 		if err != nil {
 			log.Println(err)
 			w.WriteHeader(http.StatusInternalServerError)

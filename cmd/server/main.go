@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	server "github.com/aipyth/genesis-practice-task/cmd/server"
+	server "github.com/aipyth/genesis-practice-task/internal/api"
 )
 
 func main() {

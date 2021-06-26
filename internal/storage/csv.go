@@ -80,7 +80,6 @@ func (c *CSVStorage) Delete(key string) error {
 }
 
 func (c *CSVStorage) Save() error {
-	fmt.Println(c.data)
 	return c.flush()
 }
 
